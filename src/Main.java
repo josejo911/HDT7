@@ -1,76 +1,66 @@
-import java.util.HashMap;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
 
-/**
- * Jose Jo Escobar,14343
- * Alejandro Chaclan, 15018
- * Hoja de trabajo No 7
- * Algortimos y estructura de datos
- */
-//Dictionary implemented using a Trie Tree.
 public class Main {
-    private HashMap<Character,Node> roots = new HashMap<Character,Node>();
 
-    /**
-     * Search through the dictionary for a word.
-     * @param string The word to search for.
-     * @return Whether or not the word exists in the dictionary.
-     */
-    public boolean search(String string) {
-        if (roots.containsKey(string.charAt(0))) {
-            if (string.length()==1 && roots.get(string.charAt(0)).endOfWord) {
-                return true;
+    public static void main(String[] args) {
+        String linea, key, value;
+        BinaryTree<Association<String, String>> tree = new BinaryTree<>();
+
+        //Se trata de leer el archivo en el directorio actual, donde se encuentran los archivos .java
+        try (BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") + "\\src\\diccionario.txt"))) {
+
+            StringBuilder sb = new StringBuilder();
+            linea = br.readLine();
+
+            //Se hace un ciclo para leer todo el archivo
+            while(linea!=null) {
+
+                //Se eliminan los separadores de linea
+                sb.append(linea);
+
+                //Se buscan en cada linea el value y key
+                linea = linea.toLowerCase();
+                key = "";
+                value = "";
+                boolean keyFlag = false;
+                for (int i = 0; i < linea.length(); i++) {
+                    char c = linea.charAt(i);
+                    if (Character.isLetter(c)) {
+                        if (!keyFlag)
+                            key += c;
+                        else
+                            value += c;
+                    } else {
+                        if (!key.isEmpty())
+                            keyFlag = true;
+                    }
+                }
+
+                //Se agrega la entrada al arbol
+                Association<String, String> temp = new Association<>(key, value);
+                Funciones.addBT(tree,temp);
+
+                //Se lee una nueva linea
+                linea = br.readLine();
             }
-            return searchFor(string.substring(1),roots.get(string.charAt(0)));
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Insert a word into the dictionary.
-     * @param string The word to insert.
-     */
-    public void insert(String string) {
-        if (!roots.containsKey(string.charAt(0))) {
-            roots.put(string.charAt(0), new Node());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        insertWord(string.substring(1),roots.get(string.charAt(0)));
-    }
+        try (BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") + "\\src\\texto.txt"))) {
+            StringBuilder sb = new StringBuilder();
+            linea = br.readLine();
+            sb.append(linea);
 
-    //Recursive method that inserts a new word into the trie tree.
-    private void insertWord(String string, Node node) {
-        final Node nextChild;
-        if (node.children.containsKey(string.charAt(0))) {
-            nextChild = node.children.get(string.charAt(0));
-        } else {
-            nextChild = new Node();
-            node.children.put(string.charAt(0), nextChild);
+            //En 'linea' esta el texto en ingles, cambiar las palabras
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        if (string.length() == 1) {
-            nextChild.endOfWord = true;
-            return;
-        } else {
-            insertWord(string.substring(1),nextChild);
-        }
-    }
-
-
-    //Recursive method that searches through the Trie Tree to find the value.
-    private boolean searchFor(String string, Node node) {
-        if (string.length()==0) {
-            if (node.endOfWord) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        if (node.children.containsKey(string.charAt(0))) {
-            return searchFor(string.substring(1),node.children.get(string.charAt(0)));
-        } else {
-            return false;
-        }
+        System.out.println(Funciones.inOrder(tree));
     }
 }
