@@ -62,7 +62,7 @@ public class Association<K,V> implements MapEntry<K,V>
      */
     public Association(K key, V value)
     {
-        
+
         theKey = key;
         theValue = value;
     }
@@ -92,7 +92,7 @@ public class Association<K,V> implements MapEntry<K,V>
         Association otherAssoc = (Association)other;
         return getKey().equals(otherAssoc.getKey());
     }
-    
+
     /**
      * Standard hashcode function.
      *
@@ -104,7 +104,7 @@ public class Association<K,V> implements MapEntry<K,V>
     {
         return getKey().hashCode();
     }
-    
+
     /**
      * Fetch value from association.  May return null.
      *
